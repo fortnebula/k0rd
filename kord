@@ -1,0 +1,77 @@
+#!/bin/bash
+
+function create_super_user {
+    curl -H "X-Auth-Token: supersecretadmin" -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1", "role": "admin"}' http://localhost:5000/v1/user/create
+}
+
+function create_user {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS" -H "Content-Type: application/json" -X POST  -d '{"username":"test2","password":"test2"}' http://localhost:5000/v1/user/create
+}
+
+function create_user_fail {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test2","password":"test2"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS" -H "Content-Type: application/json" -X POST  -d '{"username":"test3","password":"test3"}' http://localhost:5000/v1/user/create
+}
+
+function user_list {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X GET http://localhost:5000/v1/user/list
+}
+
+function create_token {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X GET http://localhost:5000/v1/user/list
+}
+
+function create_api_token {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    echo $ACS
+    curl -H "Authorization: Bearer $ACS" -H "Content-Type: application/json" -X POST  http://localhost:5000/v1/token/api/issue
+}
+
+function revoke_api_token {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    export API_KEY=$(curl -H "Authorization: Bearer $ACS" -H "Content-Type: application/json" -X POST  http://localhost:5000/v1/token/api/issue | grep api_key |cut -d '"' -f4)
+    echo $API_KEY
+    curl -H "Authorization: Bearer $API_KEY" -H "Content-Type: application/json"  -X DELETE  http://localhost:5000/v1/token/api/revoke
+    curl -H "Authorization: Bearer $API_KEY"  -H "Content-Type: application/json" -X GET http://localhost:5000/v1/user/list
+}
+
+function cluster_list {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X GET http://localhost:5000/v1/cluster/list
+}
+
+function cluster_create {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X POST -d '{"mac":"e4:1d:2d:e4:7e:11","ip":"10.0.0.98","status":"building","version":"v1.18"}' http://localhost:5000/v1/cluster/create
+}
+
+function cluster_update_status {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X PUT -d '{"mac":"e4:1d:2d:e4:7e:11","status":"complete"}' http://localhost:5000/v1/cluster/update/status
+}
+
+function cluster_update_ip {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X PUT -d '{"mac":"e4:1d:2d:e4:7e:11","ip":"10.0.0.99"}' http://localhost:5000/v1/cluster/update/ip
+}
+
+function cluster_update_version {
+    unset ACS
+    export ACS=$(curl -H "Content-Type: application/json" -X POST   -d '{"username":"test1","password":"test1"}' http://localhost:5000/v1/token/issue |grep access_token |cut -d '"' -f4)
+    curl -H "Authorization: Bearer $ACS"  -H "Content-Type: application/json" -X PUT -d '{"mac":"e4:1d:2d:e4:7e:11","version":"v1.18"}' http://localhost:5000/v1/cluster/update/version
+}
+
+$1

@@ -1,0 +1,11 @@
+Flask
+Flask-JWT-Extended
+flask-restx
+SQLAlchemy
+passlib
+docker
+celery
+redis
+gunicorn
+supervisor
+packet-python
