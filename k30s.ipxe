@@ -2,7 +2,7 @@
 
 set k3os_ver v0.11.0
 set root_dev sda
-set boot_url https://raw.githubusercontent.com/fortnebula/k0rd/config.yml
+set boot_url https://raw.githubusercontent.com/fortnebula/k0rd/master/config.yml
 set media_root https://github.com/rancher/k3os/releases/download/${k3os_ver}
 # only for performance reasons
 #set media_root ${boot_url}/k3os
