@@ -1,8 +1,6 @@
 ## k0rd
 
- This goals of this project are to make working with k3s even easier than it
- already is. K0rd is a tool to burn ramdisk images of k3s and launch them onto
- distributed metal providers.
+This project is a capability demonstration for how to deploy k8s in a fully automated, distributed manner on a bare metal cloud provider. k0rd will build, deploy and manage kuberentes clusters. Development of this project started on 1 Sep 2020.
 
  ### How can you contribute
 
